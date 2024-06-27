@@ -14,18 +14,21 @@ export default {
       throw error;
     }
   },
-  createEvent: async (args) => {
+  createEvent: async (args, req) => {
+    if (!req.isAuth) {
+      throw Error("Unauthenticated");
+    }
     try {
       const event = new Event({
         title: args.eventInput.title,
         description: args.eventInput.description,
         price: +args.eventInput.price,
         date: dateToString(args.eventInput.date),
-        creator: "6679dcbf607c151fe26585ad",
+        creator: req.userId,
       });
       const res = await event.save();
       const createdEvent = transformEvent(res);
-      const creatorUser = await User.findById("6679dcbf607c151fe26585ad");
+      const creatorUser = await User.findById(req.userId);
       if (!creatorUser) {
         throw new Error("the User doesn't exist");
       }
