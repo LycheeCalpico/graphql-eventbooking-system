@@ -6,8 +6,14 @@ import dotenv from "dotenv";
 import graphqlSchema from "./graphql/schema/index.js";
 import graphqlResolver from "./graphql/resolver/index.js";
 import isAuth from "./middleware/is-auth.js";
+import cors from "cors";
 const app = express();
 dotenv.config();
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
 app.use(bodyParser.json());
 app.use(isAuth);
 app.use(
