@@ -1,9 +1,14 @@
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/auth-context";
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
+  const { login } = useAuthContext();
+  const Navigate = useNavigate();
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const requestBody = {
@@ -20,7 +25,8 @@ const Auth = () => {
         },
       });
       const data = await response.json();
-      localStorage.setItem("token", data.data.login.token);
+      login(data.data.login.token, data.data.login.userId);
+      Navigate("/events");
     } catch (error) {
       throw error;
     }
@@ -40,8 +46,8 @@ const Auth = () => {
           "Content-Type": "application/json",
         },
       });
-      const data = await response.data;
-      console.log(data);
+      const data = await response.json();
+      setIsLogin(true);
     } catch (error) {
       throw error;
     }
@@ -49,6 +55,9 @@ const Auth = () => {
   return (
     <div className="w-full h-full flex justify-center items-center">
       <div className="w-1/3 h-1/2 flex flex-col items-center justify-center border-2 rounded-lg shadow-lg">
+        <h1 className="mb-4 text-xl font-bold text-emerald-200">
+          {isLogin ? "Login" : "SignUp"}
+        </h1>
         <form
           className="w-full flex flex-col items-center justify-center"
           onSubmit={isLogin ? handleLoginSubmit : handleSignupSubmit}

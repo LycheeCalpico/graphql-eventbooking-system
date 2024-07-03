@@ -5,7 +5,7 @@ import { transformEvent, transformBooking } from "./merge.js";
 export default {
   // return all the bookings
 
-  bookings: async () => {
+  bookings: async (_, req) => {
     if (!req.isAuth) {
       throw Error("Unauthenticated");
     }
@@ -20,7 +20,10 @@ export default {
   },
   bookEvent: async (args, req) => {
     if (!req.isAuth) {
-      throw Error("Unauthenticated");
+      if (req.isExpired) {
+        throw new Error("Token expired! please relogin");
+      }
+      throw new Error("Unauthenticated");
     }
     try {
       const fetchedEvent = await Event.findOne({ _id: args.eventId });

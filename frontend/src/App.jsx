@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Events from "./pages/Events";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Auth from "./pages/Auth";
 import Bookings from "./pages/Bookings";
@@ -17,8 +17,14 @@ function App() {
             <Routes>
               <Route path="/" element={null} />
               <Route path="/auth" element={!token && <Auth />} />
-              <Route path="/bookings" element={token && <Bookings />} />
-              <Route path="/events" element={<Events />} />
+              <Route
+                path="/bookings"
+                element={token ? <Bookings /> : <Navigate to="/auth" />}
+              />
+              <Route
+                path="/events"
+                element={token ? <Events /> : <Navigate to="/auth" />}
+              />
             </Routes>
           </div>
         </div>
