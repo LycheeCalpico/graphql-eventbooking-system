@@ -10,7 +10,7 @@ const Events = () => {
   const [date, setDate] = useState("");
   const { token, userId } = useAuthContext();
   const [events, setEvents] = useState([]);
-  const [detailModal, setDetailModal] = useState(false);
+  const [detailModal, setDetailModal] = useState("");
   useEffect(() => {
     const fetchEvents = async () => {
       const requestBody = {
@@ -38,11 +38,11 @@ const Events = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-  const handleOpenDetailModal = () => {
-    setDetailModal(true);
+  const handleOpenDetailModal = (eventId) => {
+    setDetailModal(eventId);
   };
   const handleCloseDetailModal = () => {
-    setDetailModal(false);
+    setDetailModal("");
   };
   const handleBook = async (eventId) => {
     const requestBody = {
@@ -204,12 +204,15 @@ const Events = () => {
                     ) : (
                       <button
                         className="px-6 py-3 mr-3 bg-emerald-100"
-                        onClick={handleOpenDetailModal}
+                        onClick={() => handleOpenDetailModal(event._id)}
                       >
                         View Details
                       </button>
                     )}
-                    <Modal show={detailModal} onClose={handleCloseDetailModal}>
+                    <Modal
+                      show={detailModal === event._id}
+                      onClose={handleCloseDetailModal}
+                    >
                       <div className="w-full py-3 px-1 bg-emerald-300 text-white mb-6 flex justify-center">
                         {event.title}
                       </div>

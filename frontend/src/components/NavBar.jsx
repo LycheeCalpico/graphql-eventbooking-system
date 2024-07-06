@@ -13,16 +13,18 @@ const NavBar = () => {
     <div className="w-full bg-emerald-100 flex justify-between items-center py-4">
       <h1 className="px-10 text-2xl text-black font-bold">EasyEvent</h1>
       <div className="flex gap-20 px-20 justify-center items-center">
-        <Link
-          to="/auth"
-          className={`${
-            active === "auth"
-              ? "bg-white px-4 py-2 rounded-lg text-emerald-600"
-              : "px-4 py-2 rounded-lg"
-          }`}
-        >
-          Authentication
-        </Link>
+        {!token && (
+          <Link
+            to="/auth"
+            className={`${
+              active === "auth"
+                ? "bg-white px-4 py-2 rounded-lg text-emerald-600"
+                : "px-4 py-2 rounded-lg"
+            }`}
+          >
+            Authentication
+          </Link>
+        )}
         <Link
           to="/events"
           className={`${

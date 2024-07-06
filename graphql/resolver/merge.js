@@ -1,14 +1,21 @@
 import User from "../../models/user.js";
 import Event from "../../models/event.js";
 import { dateToString } from "../helper/date.js";
+import DataLoader from "dataloader";
 
+const eventLoader = new DataLoader((eventIds) => {
+  return events(eventIds);
+});
+const userLoader = new DataLoader((userIds) => {
+  return User.find({ id: { $in: userIds } });
+});
 const user = async (userId) => {
   try {
     const user = await User.findById(userId);
     return {
       ...user._doc,
       password: null,
-      createdEvents: events.bind(this, user._doc.createdEvents),
+      createdEvents: () => eventLoader.loadMany(user._doc.createdEvents),
     };
   } catch (error) {
     throw error;
@@ -17,17 +24,19 @@ const user = async (userId) => {
 const events = async (eventsId) => {
   try {
     const events = await Event.find({ _id: { $in: eventsId } });
-    return events.map((event) => {
+    const transformedEvents = events.map((event) => {
       return transformEvent(event);
     });
+    console.log(transformedEvents);
+    return transformedEvents;
   } catch (error) {
     throw error;
   }
 };
 const singleEvent = async (eventId) => {
   try {
-    const event = await Event.findById(eventId);
-    return { ...event._doc, creator: user.bind(this, event.creator) };
+    const event = await eventLoader.load(eventId);
+    return event;
   } catch (error) {
     throw error;
   }

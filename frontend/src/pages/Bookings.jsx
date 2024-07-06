@@ -25,6 +25,7 @@ const Bookings = () => {
         },
       });
       const res = await response.json();
+      console.log(res);
       setBookings(res.data.bookings);
     } catch (error) {
       throw error;
