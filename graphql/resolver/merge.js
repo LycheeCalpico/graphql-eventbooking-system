@@ -3,15 +3,25 @@ import Event from "../../models/event.js";
 import { dateToString } from "../helper/date.js";
 import DataLoader from "dataloader";
 
-const eventLoader = new DataLoader((eventIds) => {
-  return events(eventIds);
+const eventLoader = new DataLoader(async (eventIds) => {
+  const eventsMap = {};
+  const events = await Event.find({ _id: { $in: eventIds } });
+  for (const event of events) {
+    eventsMap[event._id] = event;
+  }
+  return eventIds.map((eventId) => eventsMap[eventId]);
 });
-const userLoader = new DataLoader((userIds) => {
-  return User.find({ id: { $in: userIds } });
+const userLoader = new DataLoader(async (userIds) => {
+  const userMap = {};
+  const users = await User.find({ _id: { $in: userIds } });
+  for (const user of users) {
+    userMap[user._id] = user;
+  }
+  return userIds.map((userId) => userMap[userId]);
 });
 const user = async (userId) => {
   try {
-    const user = await User.findById(userId);
+    const user = await userLoader.load(userId.toString());
     return {
       ...user._doc,
       password: null,
@@ -27,7 +37,6 @@ const events = async (eventsId) => {
     const transformedEvents = events.map((event) => {
       return transformEvent(event);
     });
-    console.log(transformedEvents);
     return transformedEvents;
   } catch (error) {
     throw error;
@@ -35,7 +44,7 @@ const events = async (eventsId) => {
 };
 const singleEvent = async (eventId) => {
   try {
-    const event = await eventLoader.load(eventId);
+    const event = await eventLoader.load(eventId.toString());
     return event;
   } catch (error) {
     throw error;
