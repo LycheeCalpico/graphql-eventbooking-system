@@ -60,6 +60,7 @@ const Bookings = () => {
       const res = await response.json();
       fetchData();
     } catch (error) {
+      console.log(error);
       throw error;
     }
   };
