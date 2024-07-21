@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 import { useAuthContext } from "../context/auth-context";
 import { tr } from "date-fns/locale";
+import { useQuery, useMutation } from "@apollo/client";
+import { CANCEL_BOOKING, GET_BOOKINGS } from "../queries";
 const Bookings = () => {
   const { token, userId } = useAuthContext();
   const [bookings, setBookings] = useState([]);

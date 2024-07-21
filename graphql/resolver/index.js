@@ -3,9 +3,16 @@ import authResolver from "./auth.js";
 import bookingResolver from "./booking.js";
 
 const rootResolver = {
-  ...authResolver,
-  ...eventResolver,
-  ...bookingResolver,
+  Query: {
+    ...eventResolver.Query,
+    ...bookingResolver.Query,
+    ...authResolver.Query,
+  },
+  Mutation: {
+    ...authResolver.Mutation,
+    ...eventResolver.Mutation,
+    ...bookingResolver.Mutation,
+  },
 };
 
 export default rootResolver;

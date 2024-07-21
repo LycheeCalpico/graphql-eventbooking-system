@@ -1,6 +1,4 @@
-import { buildSchema } from "graphql";
-
-export default buildSchema(`
+export default `#graphql
 type Event {
     _id: ID!
     title: String!
@@ -37,19 +35,18 @@ input UserInput {
     email: String!
     password: String!
 }
-type RootQuery{
+type Query{
     events: [Event!]!
     bookings: [Booking!]!
     login(email: String!, password: String!): AuthData!
 }
-type RootMutation{
+type Mutation{
     createEvent(eventInput: EventInput) : Event
     createUser(userInput: UserInput) : User
     bookEvent(eventId: ID): Booking!
     cancelBooking(bookingId: ID) : [Booking!]!
 }
 schema {
-    query: RootQuery
-    mutation: RootMutation
-}
-`);
+    query: Query
+    mutation: Mutation
+}`;
